@@ -16,6 +16,7 @@ namespace TicketsConsole
     public class Program
     {
 
+        public static readonly IDictionary<string, int> CityDistance = new Dictionary<string, int>();
         static void Main(string[] args)
         {
             /*
@@ -98,7 +99,7 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
             { "Chicago", new City("Chicago", 2608, 1525) },
             { "Washington", new City("Washington", 3358, 1320) },
         };
-
+        
         public class Event
         {
             public int Id { get; set; }
@@ -188,7 +189,20 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
         
         private int GetDistance(String from, String to)
         {
-            return Math.Abs(Cities[from].X - Cities[to].X) + Math.Abs(Cities[from].Y - Cities[to].Y);
+            if (string.Equals(from, to, StringComparison.CurrentCultureIgnoreCase)) 
+                return 0;
+            
+            CityDistance.TryGetValue($"{from}-{to}", out var distance);
+
+            if (distance > 0) return distance;
+            CityDistance.TryGetValue($"{to}-{from}", out distance);
+            
+            if(distance > 0) return distance;
+            
+            distance = Math.Abs(Cities[from].X - Cities[to].X) + Math.Abs(Cities[from].Y - Cities[to].Y);
+            CityDistance.Add($"{from}-{to}",distance);
+            
+            return distance;
         }
         
         private void SendCustomerNotifications(Customer customer, Event customerEvent)
