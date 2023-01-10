@@ -13,7 +13,7 @@ Please, instead of debuging with breakpoints, debug with "Console.Writeline();" 
 
 namespace TicketsConsole
 {
-    internal class Program
+    public class Program
     {
 
         static void Main(string[] args)
@@ -23,6 +23,7 @@ namespace TicketsConsole
             1. You can see here a list of events, a customer object. Try to understand the code, make it compile. 
 
            2. The goal is to create a MarketingEngine class sending all events through the constructor as parameter and make it print the events that are happening in the same city as the customer. To do that, inside this class, create a SendCustomerNotifications method which will receive a customer as parameter and an Event parameter and will mock the the Notification Service API. DON’T MODIFY THIS METHOD, unless you want to add the price to the console.writeline for task 7. Add this ConsoleWriteLine inside the Method to mock the service. Inside this method you can add the code you need to run this task correctly but you cant modify the console writeline: Console.WriteLine($"{customer.Name} from {customer.City} event {e.Name} at {e.Date}");
+
 
             3. As part of a new campaign, we need to be able to let customers know about events that are coming up close to their next birthday. You can make a guess and add it to the MarketingEngine class if you want to. So we still want to keep how things work now, which is that we email customers about events in their city or the event closest to next customer's birthday, and then we email them again at some point during the year. The current customer, his birthday is on may. So it's already in the past. So we want to find the next one, which is 23. How would you like the code to be built? We don't just want functionality; we want more than that. We want to know how you plan to make that work. Please code it.
 
@@ -74,6 +75,10 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
                 City = "New York",
                 BirthDate = new DateTime(1995, 05, 10)
             };
+            
+            //2.
+            var marketingEngine = new MarketingEngine(events, customer);
+            marketingEngine.SendSameCityCampaign();
 
         }
 
@@ -117,4 +122,29 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
         ---------------------------------------*/
 
     }
+    
+    public class MarketingEngine
+    {
+        private readonly IEnumerable<Event> _events;
+        private readonly Customer _customer;
+
+        public MarketingEngine(IEnumerable<Event> events, Customer customer)
+        {
+            _events = events;
+            _customer = customer;
+        }
+        public void SendSameCityCampaign()
+        {
+            foreach (var e in _events)
+            {
+                if(string.Equals(e.City, _customer.City, StringComparison.CurrentCultureIgnoreCase))
+                    SendCustomerNotifications(_customer,e);
+            }
+        }
+        private void SendCustomerNotifications(Customer customer, Event customerEvent)
+        {
+            Console.WriteLine($"{customer.Name} from {customer.City} event {customerEvent.Name} at {customerEvent.Date} ");
+        }
+    }
+
 }
