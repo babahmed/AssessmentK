@@ -79,6 +79,9 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
             //2.
             var marketingEngine = new MarketingEngine(events, customer);
             marketingEngine.SendSameCityCampaign();
+            
+            //3.
+            marketingEngine.SendBirthdayCampaign();
 
         }
 
@@ -139,6 +142,22 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
             {
                 if(string.Equals(e.City, _customer.City, StringComparison.CurrentCultureIgnoreCase))
                     SendCustomerNotifications(_customer,e);
+            }
+        }
+        public void SendBirthdayCampaign()
+        {
+            DateTime today = DateTime.Today;
+            
+            //check if birthday is past within year
+            DateTime nextBirthday = _customer.BirthDate.Day > today.Day
+                ? new DateTime(today.Year, _customer.BirthDate.Month, _customer.BirthDate.Day)
+                : new DateTime(today.Year + 1, _customer.BirthDate.Month, _customer.BirthDate.Day);
+
+            var closestEvent = _events.Where(e => e.Date < nextBirthday).MaxBy(e => e.Date);
+
+            if (closestEvent != null)
+            {
+                SendCustomerNotifications(_customer,closestEvent);
             }
         }
         private void SendCustomerNotifications(Customer customer, Event customerEvent)
