@@ -82,8 +82,22 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
             
             //3.
             marketingEngine.SendBirthdayCampaign();
+            
+            //4.
+            marketingEngine.SendClosestEventCampaign();
 
         }
+        
+        public record City(string Name, int X, int Y);
+        public static readonly IDictionary<string, City> Cities = new Dictionary<string, City>()
+        {
+            { "New York", new City("New York", 3572, 1455) },
+            { "Los Angeles", new City("Los Angeles", 462, 975) },
+            { "San Francisco", new City("San Francisco", 183, 1233) },
+            { "Boston", new City("Boston", 3778, 1566) },
+            { "Chicago", new City("Chicago", 2608, 1525) },
+            { "Washington", new City("Washington", 3358, 1320) },
+        };
 
         public class Event
         {
@@ -160,6 +174,23 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
                 SendCustomerNotifications(_customer,closestEvent);
             }
         }
+        
+        public void SendClosestEventCampaign()
+        {
+            var closestFive = _events.OrderBy(e => GetDistance(_customer.City,e.City)).Take(5);
+
+            if (!closestFive.Any()) return;
+            foreach (var @event in closestFive)
+            {
+                SendCustomerNotifications(_customer, @event);
+            }
+        }
+        
+        private int GetDistance(String from, String to)
+        {
+            return Math.Abs(Cities[from].X - Cities[to].X) + Math.Abs(Cities[from].Y - Cities[to].Y);
+        }
+        
         private void SendCustomerNotifications(Customer customer, Event customerEvent)
         {
             Console.WriteLine($"{customer.Name} from {customer.City} event {customerEvent.Name} at {customerEvent.Date} ");
