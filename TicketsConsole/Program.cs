@@ -198,10 +198,18 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
             CityDistance.TryGetValue($"{to}-{from}", out distance);
             
             if(distance > 0) return distance;
-            
-            distance = Math.Abs(Cities[from].X - Cities[to].X) + Math.Abs(Cities[from].Y - Cities[to].Y);
-            CityDistance.Add($"{from}-{to}",distance);
-            
+
+            try
+            {
+                distance = Math.Abs(Cities[from].X - Cities[to].X) + Math.Abs(Cities[from].Y - Cities[to].Y);
+                CityDistance.Add($"{from}-{to}",distance);
+            }
+            catch
+            {
+                //log if required
+                //you might want to return Int.Max here to avoid the order considering these records
+            }
+
             return distance;
         }
         
