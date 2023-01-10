@@ -55,18 +55,18 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
             */
 
             var events = new List<Event>{
-                new Event(1, "Phantom of the Opera", "New York", new DateTime(2023,12,23)),
-                new Event(2, "Metallica", "Los Angeles", new DateTime(2023,12,02)),
-                new Event(3, "Metallica", "New York", new DateTime(2023,12,06)),
-                new Event(4, "Metallica", "Boston", new DateTime(2023,10,23)),
-                new Event(5, "LadyGaGa", "New York", new DateTime(2023,09,20)),
-                new Event(6, "LadyGaGa", "Boston", new DateTime(2023,08,01)),
-                new Event(7, "LadyGaGa", "Chicago", new DateTime(2023,07,04)),
-                new Event(8, "LadyGaGa", "San Francisco", new DateTime(2023,07,07)),
-                new Event(9, "LadyGaGa", "Washington", new DateTime(2023,05,22)),
-                new Event(10, "Metallica", "Chicago", new DateTime(2023,01,01)),
-                new Event(11, "Phantom of the Opera", "San Francisco", new DateTime(2023,07,04)),
-                new Event(12, "Phantom of the Opera", "Chicago", new DateTime(2024,05,15))
+                new Event(1, "Phantom of the Opera", "New York", new DateTime(2023,12,23), 10),
+                new Event(2, "Metallica", "Los Angeles", new DateTime(2023,12,02), 11),
+                new Event(3, "Metallica", "New York", new DateTime(2023,12,06), 12),
+                new Event(4, "Metallica", "Boston", new DateTime(2023,10,23), 13),
+                new Event(5, "LadyGaGa", "New York", new DateTime(2023,09,20), 14),
+                new Event(6, "LadyGaGa", "Boston", new DateTime(2023,08,01), 15),
+                new Event(7, "LadyGaGa", "Chicago", new DateTime(2023,07,04), 16),
+                new Event(8, "LadyGaGa", "San Francisco", new DateTime(2023,07,07), 17),
+                new Event(9, "LadyGaGa", "Washington", new DateTime(2023,05,22), 18),
+                new Event(10, "Metallica", "Chicago", new DateTime(2023,01,01), 19),
+                new Event(11, "Phantom of the Opera", "San Francisco", new DateTime(2023,07,04), 20),
+                new Event(12, "Phantom of the Opera", "Chicago", new DateTime(2024,05,15), 21)
             };
 
             var customer = new Customer()
@@ -100,19 +100,22 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
             { "Washington", new City("Washington", 3358, 1320) },
         };
         
+        //7.
         public class Event
         {
             public int Id { get; set; }
             public string Name { get; set; }
             public string City { get; set; }
             public DateTime Date { get; set; }
+            public Decimal Price { get; set; }
 
-            public Event(int id, string name, string city, DateTime date)
+            public Event(int id, string name, string city, DateTime date, Decimal price)
             {
                 this.Id = id;
                 this.Name = name;
                 this.City = city;
                 this.Date = date;
+                this.Price = price;
             }
         }
 
@@ -153,7 +156,7 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
         }
         public void SendSameCityCampaign()
         {
-            foreach (var e in _events)
+            foreach (var e in _events.Where(c=>c.Price>10))
             {
                 if(string.Equals(e.City, _customer.City, StringComparison.CurrentCultureIgnoreCase))
                     SendCustomerNotifications(_customer,e);
@@ -186,7 +189,7 @@ var distance = Math.Abs(customerCityInfo.X - eventCityInfo.X) + Math.Abs(custome
                 SendCustomerNotifications(_customer, @event);
             }
         }
-        
+        //5,6.
         private int GetDistance(String from, String to)
         {
             if (string.Equals(from, to, StringComparison.CurrentCultureIgnoreCase)) 
